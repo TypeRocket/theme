@@ -1,0 +1,17 @@
+### Vendor ###
+/vendor
+node_modules
+package-lock.json
+
+### Project Files ###
+*.sublime-project
+*.sublime-workspace
+.settings
+.project
+.build
+.idea
+.DS_Store*
+ehthumbs.db
+Icon?
+Thumbs.db
+
