@@ -1,31 +1,35 @@
 <?php
-// Define template dir/uri for easy access
-define('THEME_DIR', get_template_directory());
-define('THEME_URI', get_template_directory_uri());
-define('THEME_URI_CHILD', get_stylesheet_directory_uri());
-
 // Composer
 if(file_exists(__DIR__ . '/vendor/autoload.php')) {
     require __DIR__ . '/vendor/autoload.php';
 }
 
-// Custom Theme Options
-//
-// Update THEME_OPTIONS_NAME with a key you
-// want your theme options to be saved as
-// in the wp_options database table.
-define('THEME_OPTIONS_NAME', 'my_theme_options');
+// Define Theme Directory
+define('THEME_URI', get_template_directory_uri() );
 
-add_filter('tr_theme_options_name', function() {
-    return THEME_OPTIONS_NAME;
+$manifest = \TypeRocket\Utility\Manifest::cache(
+    __DIR__ . '/public/mix-manifest.json',
+    'theme'
+);
+
+// Theme Assets
+add_action('wp_enqueue_scripts', function() use ($manifest) {
+    wp_enqueue_style( 'main-style', THEME_URI . '/public' . $manifest['/theme/theme.css'] );
+    wp_enqueue_script( 'main-script', THEME_URI . '/public' . $manifest['/theme/theme.js'], [], false, true );
 });
 
-add_filter('tr_theme_options_page', function() {
-    return THEME_DIR . '/theme-options.php';
+// Admin Assets
+add_action('admin_enqueue_scripts', function() use ($manifest) {
+    wp_enqueue_style( 'admin-style', THEME_URI . '/public' . $manifest['/admin/admin.css'] );
+    wp_enqueue_script( 'admin-script', THEME_URI . '/public' . $manifest['/admin/admin.js'], [], false, true );
 });
 
-// Init Theme
-include('init/clean.php');
-include('init/js_css.php');
-include('init/sidebars.php');
-include('init/menus.php');
+// Supports
+add_theme_support( 'post-thumbnails' );
+add_theme_support( 'title-tag' );
+register_nav_menu( 'main', 'Main Menu' );
+
+// Templates
+apply_filters( 'comments_template', function() {
+    return tr_views_path('comments.php');
+});
