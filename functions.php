@@ -33,10 +33,3 @@ register_nav_menu( 'main', 'Main Menu' );
 apply_filters( 'comments_template', function() {
     return tr_views_path('comments.php');
 });
-
-// Suppress WP_DEBUG File Deprecated
-if(WP_DEBUG) {
-    add_action('deprecated_file_included', function(...$file) {
-        add_filter('deprecated_file_trigger_error', '__return_false');
-    }, 10, 4);
-}
